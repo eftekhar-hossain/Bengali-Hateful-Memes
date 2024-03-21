@@ -40,7 +40,7 @@ import os
 os.mkdir("Datasets/")
 ```
 
-After completing the above steps, your folders should organize the data as follows in `Bengali-Hateful-Memes/data`,
+After completing the above steps, your folders should organize the data as follows in `Bengali-Hateful-Memes/'Bengali-Hateful-Memes'`,
 
 ```
 ├── coco

@@ -40,18 +40,66 @@ import os
 os.mkdir("Datasets/")
 ```
 
-After completing the above steps, your folders should organize the data as follows in `Bengali-Hateful-Memes/'Bengali-Hateful-Memes'`,
+After completing the above steps, your folders should organize the data as follows in `Bengali-Hateful-Memes/Align-Before-Attend@EACL/`,
 
 ```
-├── coco
-│   └── train2017
-├── gqa
-│   └── images
-├── ocr_vqa
-│   └── images
-├── textvqa
-│   └── train_images
-└── vg
-    ├── VG_100K
-    └── VG_100K_2
+├── Code
+│   └── .py files
+├── Datasets
+│   └── will store .pkl files
+├── MUTE
+│   └── Memes
+│         ├── .jpg
+          └── .png
+    ├── test_hate.xlsx
+    └── train_hate.xlsx
+    └── valid_hate.xlsx 
+   
 ```
+
+### Make Pickle files
+You can create the pickle files for all the splits by running the following scripts. All the pickle files will be saved into `./Datasets/` folder with appropriate names.
+
+1. Generate Pickle files for train, validation, and test set images
+
+```Shell
+python Code/main.py -d-img \
+-img_dir 'MUTE/Memes/' \
+-train 'MUTE/train_hate' \
+-valid 'MUTE/valid_hate' \
+-test 'MUTE/test_hate' \
+-img_column_name 'image_name'  \
+-img_size 150 \
+-dataset_name 'mute' \
+-split_name ['train','valid','test']
+```
+Arguments:
+
+- `-d-img`: read the images from the datasets.
+- `-img_dir`: provide the image directory path as a string.
+- `-train`: train Excel file name with directory. (exclude the `.xlsx`) 
+- `-valid`: validation Excel file name with directory. (exclude the `.xlsx`)
+- `-test`: test Excel file name with directory. (exclude the `.xlsx`)
+- `-img_column_name`: give the column name where the image names are stored.
+- `-img_size`: desired size of the input image.
+- `-dataset_name`: name of the dataset.
+- `-split_name`: pass the list of split names
+
+2. Generate Pickle files for train, validation, and test set captions
+
+```Shell
+python Code/main.py -d-txt \
+-train 'MUTE/train_hate' \
+-valid 'MUTE/valid_hate' \
+-test 'MUTE/test_hate' \
+-txt_len 60 \
+-txt_column_name 'Captions'  \
+-dataset_name 'mute' \
+-split_name ['train','valid','test']
+```
+Arguments:
+
+- `-d-txt`: read the texts from the datasets.
+- `-txt_len`: maximum text length for padding.
+- `-txt_column_name`: the column name where the texts is stored 
+

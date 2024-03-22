@@ -85,7 +85,7 @@ Arguments:
 - `-dataset_name`: name of the dataset.
 - `-split_name`: pass the list of split names
 
-2. Generate Pickle files for train, validation, and test set captions
+2. Generate Pickle files for training, validation, and test set captions. You will also obtain the `vocabulary size` that can be used during model training.
 
 ```Shell
 python Code/main.py -d-txt \
@@ -101,5 +101,34 @@ Arguments:
 
 - `-d-txt`: read the texts from the datasets.
 - `-txt_len`: maximum text length for padding.
-- `-txt_column_name`: the column name where the texts is stored 
+- `-txt_column_name`: the column name where the text is stored 
 
+
+### Models Training and Evaluation
+You can run and evaluate the proposed method and its variants on the MUTE dataset.
+
+```Shell
+python Code/main.py -models \
+-method_name 'mca-scf' \
+-datasets ['MUTE/train_hate','MUTE/valid_hate','MUTE/test_hate'] \
+-train_pkl ['train_image_mute','train_text_mute'] \
+-valid_pkl ['valid_image_mute','valid_text_mute'] \
+-test_pkl ['test_image_mute','test_text_mute'] \
+-label_column 'Label'  \
+-hparams "[60, 150, 11993, 32, 2]" \
+-md_hparams "['mca-scf_mute', 32, 3]" \
+```
+Arguments:
+
+- `-models`: represent the models' training.
+- `-method_name`: provide the method name you want to build. The paper described one proposed method and three variants of the proposed method. The method names you can pass **`mca-scf`**, **`mcf`**, **`tgcf`**, and **`vgcf`**. Please read the paper to get the full information about these methods.
+- `-datasets`: list of Excel file names of the training, validation, and test set. (Exclude `.xlsx` from the name)
+- `-train_pkl`: list of saved train pickle file names. It should be passed in the order `image pickles`, and `text pickles`.
+- `-valid_pkl`: list of saved valid pickle file names. It should be passed in the order `image pickles`, and `text pickles`.
+- `-test_pkl`: list of saved test pickle file names. It should be passed in the order `image pickles`, and `text pickles`.
+- `-label_column`: Column name where the class labels are stored in the Excel files.
+- `-hparams`: list of hyperparameters. The list represents `[maximum text length, image size, vocabulary size, embedding dimension, number of classes]`.
+- `-md_hparams`: list of model hyperparameters. The list represents `[model name to saved, batch size, number of epochs]`.
+
+
+**Demo code** [Colab Notebook](https://github.com/eftekhar-hossain/Bengali-Hateful-Memes/blob/main/Align-Before-Attend@EACL/demo_code_%5BEACL_SRW'24%5D.ipynb) 

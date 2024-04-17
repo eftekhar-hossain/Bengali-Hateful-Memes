@@ -20,7 +20,7 @@ import gdown
 # Replace 'YOUR_FILE_ID' with the actual file ID from the Google Drive link.
 gdown.download("https://drive.google.com/uc?export=download&id=1ozTFUM7q27g7uckhPWUiQFwhROCiEUAc", "file.zip", quiet=False)
 ```
-After running the cell the dataset will be downloaded as **file.zip**
+After running the cell, the dataset will be downloaded as **file.zip**
 
 4. Unzip the file.zip
 
@@ -30,7 +30,7 @@ zip_ref = zipfile.ZipFile("file.zip", 'r')
 zip_ref.extractall()
 zip_ref.close()
 ```
-  After unzipping the file you can see the **MUTE** dataset in the current directory. In the **MUTE** folder you can see   three Excel files and one folder consisting of memes. To make the work simple we will make pickle files of the visual and textual information for each dataset split.
+  After unzipping the file, you will see the **MUTE** dataset in the current directory. In the **MUTE** folder, you can see   three Excel files and one meme folder. To make the work simple, we will make pickle files of the visual and textual information for each dataset split.
 
 
 
@@ -58,7 +58,7 @@ After completing the above steps, your folders should organize the data as follo
 ```
 
 ### Make Pickle files
-You can create the pickle files for all the splits by running the following scripts. All the pickle files will be saved into `./Datasets/` folder with appropriate names.
+Run the following scripts to create the pickle files for all the splits. The pickle files will be saved in the `./Datasets/` folder with appropriate names.
 
 1. Generate Pickle files for train, validation, and test set images
 
@@ -77,9 +77,9 @@ Arguments:
 
 - `-d-img`: read the images from the datasets.
 - `-img_dir`: provide the image directory path as a string.
-- `-train`: train Excel file name with directory. (exclude the `.xlsx`) 
-- `-valid`: validation Excel file name with directory. (exclude the `.xlsx`)
-- `-test`: test Excel file name with directory. (exclude the `.xlsx`)
+- `-train`: train set Excel file name with directory. (exclude the `.xlsx`) 
+- `-valid`: validation set Excel file name with directory. (exclude the `.xlsx`)
+- `-test`: test set Excel file name with directory. (exclude the `.xlsx`)
 - `-img_column_name`: give the column name where the image names are stored.
 - `-img_size`: desired size of the input image.
 - `-dataset_name`: name of the dataset.
@@ -121,11 +121,11 @@ python Code/main.py -models \
 Arguments:
 
 - `-models`: represent the models' training.
-- `-method_name`: provide the method name you want to build. The paper described one proposed method and three variants of the proposed method. The method names you can pass **`mca-scf`**, **`mcf`**, **`tgcf`**, and **`vgcf`**. Please read the paper to get the full information about these methods.
+- `-method_name`: Provide the name of the method you want to build. The paper described one proposed method and three variants of the proposed method. The method names you can pass **`mca-scf`**, **`mcf`**, **`tgcf`**, and **`vgcf`**. Please read the paper to get the full information about these methods.
 - `-datasets`: list of Excel file names of the training, validation, and test set. (Exclude `.xlsx` from the name)
-- `-train_pkl`: list of saved train pickle file names. It should be passed in the order `image pickles`, and `text pickles`.
-- `-valid_pkl`: list of saved valid pickle file names. It should be passed in the order `image pickles`, and `text pickles`.
-- `-test_pkl`: list of saved test pickle file names. It should be passed in the order `image pickles`, and `text pickles`.
+- `-train_pkl`: list of saved train pickle file names. It should be passed in the order of `image pickles` and `text pickles`.
+- `—valid_pkl`: A list of saved valid pickle file names. It should be passed in the order of `image pickles` and `text pickles`.
+- `-test_pkl`: list of saved test pickle file names. It should be passed in the order of `image pickles` and `text pickles`.
 - `-label_column`: Column name where the class labels are stored in the Excel files.
 - `-hparams`: list of hyperparameters. The list represents `[maximum text length, image size, vocabulary size, embedding dimension, number of classes]`.
 - `-md_hparams`: list of model hyperparameters. The list represents `[model name to saved, batch size, number of epochs]`.

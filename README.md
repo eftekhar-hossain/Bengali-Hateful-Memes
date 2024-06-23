@@ -25,6 +25,7 @@ Multimodal hateful content detection is a challenging task that requires complex
 #### How to Run 🤝
 Please check out our [instructions](https://github.com/eftekhar-hossain/Bengali-Hateful-Memes/tree/main/Align-Before-Attend%40EACL) to run the model and its variants on a multimodal dataset.  
 
+----
 
 ## ♨️Deciphering Hate (ACL'24)
 

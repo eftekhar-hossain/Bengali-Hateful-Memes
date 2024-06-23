@@ -35,7 +35,27 @@ Internet memes have become a powerful means for individuals to express emotions,
     The method proposed in Deciphering Hate Paper.
 </p>
 
-### Datasets
+### Dataset
+
+👉 [[Link](https://drive.google.com/file/d/1ozTFUM7q27g7uckhPWUiQFwhROCiEUAc/view?usp=sharing)]
+
+#### How to Load using Python
+   
+```python
+import gdown
+# Replace 'YOUR_FILE_ID' with the actual file ID from the Google Drive link.
+gdown.download("https://drive.google.com/uc?export=download&id=1ozTFUM7q27g7uckhPWUiQFwhROCiEUAc", "file.zip", quiet=False)
+```
+After running the cell, the dataset will be downloaded as **file.zip**
+
+#### Unzip the file.zip
+
+```python
+import zipfile
+zip_ref = zipfile.ZipFile("file.zip", 'r')
+zip_ref.extractall()
+zip_ref.close()
+```
 
 
 

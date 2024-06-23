@@ -8,25 +8,7 @@
 **Deciphering Hate: Identifying Hateful Memes and Their Targets** (ACL, 2024) [[Paper](https://arxiv.org/abs/2403.10829)] [[Code]()]  <br>
 [Eftekhar Hossain](https://eftekhar-hossain.github.io/), [Omar Sharif](https://omar-sharif03.github.io/), [Mohammed Moshiul Hoque](https://scholar.google.com/citations?user=srYxYhcAAAAJ&hl=en), [Sarah M Preum](https://persist-lab.github.io/portfolio/)
 
-
-## 🌴Align before Attend (EACL'24)
-
-Multimodal hateful content detection is a challenging task that requires complex reasoning across visual and textual modalities. Therefore, creating a meaningful multimodal representation that effectively captures the interplay between visual and textual features through intermediate fusion is critical. Conventional fusion techniques are unable to attend to the modality-specific features effectively. Moreover, most studies exclusively concentrated on English and overlooked other low-resource languages. We propose a **context-aware attention** framework for multimodal hateful content detection and assess it for both English and non-English languages. The proposed approach incorporates an **attention layer** to meaningfully align the visual and textual features. This alignment enables selective focus on modality-specific features before fusing them. The proposed performs superiorly on two benchmark hateful meme datasets, viz. **MUTE (Bengali code-mixed)** and **MultiOFF (English)**. 
-
-<p align="center">
-    <a href="https://llava.hliu.cc/"><img src="Images/align-attend.png" width="70%"></a> <br>
-    The method proposed in Align before Attend Paper.
-</p>
-
-### Datasets
-[MUTE](https://github.com/eftekhar-hossain/MUTE-AACL22) (Bengali Hateful Memes Dataset) <br> 
-[MultiOFF](https://github.com/bharathichezhiyan/Multimodal-Meme-Classification-Identifying-Offensive-Content-in-Image-and-Text) (English Offensive Memes Dataset)
-
-#### How to Run 🤝
-Please check out our [instructions](https://github.com/eftekhar-hossain/Bengali-Hateful-Memes/tree/main/Align-Before-Attend%40EACL) to run the model and its variants on a multimodal dataset.  
-
 ----
-
 ## ♨️Deciphering Hate (ACL'24)
 
 Internet memes have become a powerful means for individuals to express emotions, thoughts, and perspectives on social media. While often considered a source of humor and entertainment, memes can also disseminate hateful content targeting individuals or communities. Most existing research focuses on the negative aspects of memes in high-resource languages, overlooking the distinctive challenges associated with low-resource languages like Bengali (also known as Bangla). Furthermore, while previous work on Bengali memes has focused on detecting hateful memes, there has been no work on detecting their targeted entities. To bridge this gap and facilitate research in this arena, we introduce a novel multimodal dataset for Bengali, **BHM (Bengali Hateful Memes)**. The dataset consists of 7,148 memes with Bengali as well as code-mixed captions, tailored for two tasks: (i) detecting hateful memes and (ii) detecting the social entities they target (i.e., Individual, Organization, Community, and Society). To solve these tasks, we propose **DORA (Dual cO -attention fRAmework)**, a multimodal deep neural network that systematically extracts the significant modality features from the memes and jointly evaluates them with the modality-specific features to understand the context better. Our experiments show that DORA is generalizable on other low-resource hateful meme datasets and outperforms several state-of-the-art rivaling baselines. 
@@ -55,6 +37,24 @@ zip_ref = zipfile.ZipFile("file.zip", 'r')
 zip_ref.extractall()
 zip_ref.close()
 ```
+
+----
+
+## 🌴Align before Attend (EACL'24)
+
+Multimodal hateful content detection is a challenging task that requires complex reasoning across visual and textual modalities. Therefore, creating a meaningful multimodal representation that effectively captures the interplay between visual and textual features through intermediate fusion is critical. Conventional fusion techniques are unable to attend to the modality-specific features effectively. Moreover, most studies exclusively concentrated on English and overlooked other low-resource languages. We propose a **context-aware attention** framework for multimodal hateful content detection and assess it for both English and non-English languages. The proposed approach incorporates an **attention layer** to meaningfully align the visual and textual features. This alignment enables selective focus on modality-specific features before fusing them. The proposed performs superiorly on two benchmark hateful meme datasets, viz. **MUTE (Bengali code-mixed)** and **MultiOFF (English)**. 
+
+<p align="center">
+    <a href="https://llava.hliu.cc/"><img src="Images/align-attend.png" width="70%"></a> <br>
+    The method proposed in Align before Attend Paper.
+</p>
+
+### Datasets
+[MUTE](https://github.com/eftekhar-hossain/MUTE-AACL22) (Bengali Hateful Memes Dataset) <br> 
+[MultiOFF](https://github.com/bharathichezhiyan/Multimodal-Meme-Classification-Identifying-Offensive-Content-in-Image-and-Text) (English Offensive Memes Dataset)
+
+#### How to Run 🤝
+Please check out our [instructions](https://github.com/eftekhar-hossain/Bengali-Hateful-Memes/tree/main/Align-Before-Attend%40EACL) to run the model and its variants on a multimodal dataset.  
 
 ----
 

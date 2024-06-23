@@ -18,7 +18,7 @@ Internet memes have become a powerful means for individuals to express emotions,
     The method proposed in Deciphering Hate Paper.
 </p>
 
-### Dataset 👉 [[Link](https://drive.google.com/file/d/1ozTFUM7q27g7uckhPWUiQFwhROCiEUAc/view?usp=sharing)]
+### Dataset 👉 [[Link](https://drive.google.com/file/d/1uftdZXcf00X2MQVb8UUcRMaIor7Pfd1w/view?usp=sharing)]
 
 #### How to Load using Python
    

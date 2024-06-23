@@ -22,7 +22,7 @@ Multimodal hateful content detection is a challenging task that requires complex
 [MUTE](https://github.com/eftekhar-hossain/MUTE-AACL22) (Bengali Hateful Memes Dataset) <br> 
 [MultiOFF](https://github.com/bharathichezhiyan/Multimodal-Meme-Classification-Identifying-Offensive-Content-in-Image-and-Text) (English Offensive Memes Dataset)
 
-### How to Run 🤝
+#### How to Run 🤝
 Please check out our [instructions](https://github.com/eftekhar-hossain/Bengali-Hateful-Memes/tree/main/Align-Before-Attend%40EACL) to run the model and its variants on a multimodal dataset.  
 
 
@@ -35,9 +35,7 @@ Internet memes have become a powerful means for individuals to express emotions,
     The method proposed in Deciphering Hate Paper.
 </p>
 
-### Dataset
-
-👉 [[Link](https://drive.google.com/file/d/1ozTFUM7q27g7uckhPWUiQFwhROCiEUAc/view?usp=sharing)]
+### Dataset 👉 [[Link](https://drive.google.com/file/d/1ozTFUM7q27g7uckhPWUiQFwhROCiEUAc/view?usp=sharing)]
 
 #### How to Load using Python
    

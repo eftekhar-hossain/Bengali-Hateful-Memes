@@ -9,6 +9,12 @@
 **Deciphering Hate: Identifying Hateful Memes and Their Targets** (ACL, 2024) [[Paper](https://arxiv.org/abs/2403.10829)] [[Code](https://github.com/eftekhar-hossain/Bengali-Hateful-Memes/tree/main/Deciphering-Hate%40ACL)] 🔥 <br>
 [Eftekhar Hossain](https://eftekhar-hossain.github.io/), [Omar Sharif](https://omar-sharif03.github.io/), [Mohammed Moshiul Hoque](https://scholar.google.com/citations?user=srYxYhcAAAAJ&hl=en), [Sarah M Preum](https://persist-lab.github.io/portfolio/)
 
+🪲<ins>**Check out another interesting work**</ins> 
+
+**A Multimodal Framework to Detect Target-Aware Aggression in Memes** (EACL, 2024) [[Paper](https://aclanthology.org/2024.eacl-long.153/)] [[Code](https://github.com/shawlyahsan/Bengali-Aggression-Memes)]⚡ <br>
+
+
+
 ----
 ## ♨️Deciphering Hate (ACL'24)
 

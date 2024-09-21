@@ -1,6 +1,6 @@
 # How to Run
 
-The following instructions will show how to run the **DORA** model on the **BHM** dataset. You can apply it to any multimodal (imag+text) dataset with slight modifications in the `dataset.py` file.
+The following instructions will show how to run the **DORA** model on the **BHM** dataset. You can apply it to any multimodal (image+text) dataset with slight modifications in the `dataset.py` file.
 
 1. Clone this repository and navigate to Deciphering-Hate@ACL folder
 ```bash

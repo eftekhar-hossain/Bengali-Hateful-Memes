@@ -1,11 +1,12 @@
 # 👺 Multimodal Hate Speech Detection in Bengali
 
+
 📢 **Paper Release**
 
 **Align before Attend: Aligning Visual and Textual Features for Multimodal Hateful Content Detection** (EACL-SRW, 2024) [[Paper](https://aclanthology.org/2024.eacl-srw.12/)] [[Code](https://github.com/eftekhar-hossain/Bengali-Hateful-Memes/tree/main/Align-Before-Attend%40EACL)]  <br>
 [Eftekhar Hossain*](https://eftekhar-hossain.github.io/), [Omar Sharif*](https://omar-sharif03.github.io/), [Mohammed Moshiul Hoque](https://scholar.google.com/citations?user=srYxYhcAAAAJ&hl=en), [Sarah M Preum](https://persist-lab.github.io/portfolio/) (*Equal Contribution)
 
-**Deciphering Hate: Identifying Hateful Memes and Their Targets** (ACL, 2024) [[Paper](https://arxiv.org/abs/2403.10829)] [[Code]()]  <br>
+**Deciphering Hate: Identifying Hateful Memes and Their Targets** (ACL, 2024) [[Paper](https://arxiv.org/abs/2403.10829)] [[Code](https://github.com/eftekhar-hossain/Bengali-Hateful-Memes/tree/main/Deciphering-Hate%40ACL)] 🔥 <br>
 [Eftekhar Hossain](https://eftekhar-hossain.github.io/), [Omar Sharif](https://omar-sharif03.github.io/), [Mohammed Moshiul Hoque](https://scholar.google.com/citations?user=srYxYhcAAAAJ&hl=en), [Sarah M Preum](https://persist-lab.github.io/portfolio/)
 
 ----
@@ -38,6 +39,9 @@ zip_ref = zipfile.ZipFile("file.zip", 'r')
 zip_ref.extractall()
 zip_ref.close()
 ```
+
+#### How to Run 🤝
+Please check out our [instructions](https://github.com/eftekhar-hossain/Bengali-Hateful-Memes/tree/main/Deciphering-Hate%40ACL) to run the model on the **BHM** dataset.
 
 ----
 

@@ -18,6 +18,7 @@ If you already have the **BHM** folder in the current directory
 pip install -r requirements.txt  # download the required libraries
 ```
 3. Directory
+   
 Folders should organized as follows in `Bengali-Hateful-Memes/Deciphering-Hate@ACL/`,
 
 ```

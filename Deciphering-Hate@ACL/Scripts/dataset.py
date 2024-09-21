@@ -1,11 +1,14 @@
 import pandas as pd
+import numpy as np
 import os
 import torch
+import time
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms, models
 from PIL import Image
+from sklearn.utils.class_weight import compute_class_weight
 from transformers import AutoModel,AutoTokenizer, AdamW, get_linear_schedule_with_warmup
 import clip
 
@@ -13,26 +16,65 @@ import clip
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print("Device:",device)
 
-def load_dataset(files_path,memes_path):
+start_time = time.time()
+
+def balanced_weigths(data):
+      # class wights
+      class_weights = compute_class_weight('balanced', classes=np.unique(data['Labels']), y=data['Labels'])
+      class_weights = torch.tensor(class_weights, dtype=torch.float32).to(device)
+      return class_weights
+
+
+def load_dataset(files_path,memes_path, task, max_len, batch_size):
     # Paths
-    train_file = os.path.join(files_path, "train_task1.xlsx")
-    valid_file = os.path.join(files_path, "valid_task1.xlsx")
-    test_file = os.path.join(files_path, "test_task1.xlsx")
     
-    # binary dataset
-    train_data_B = pd.read_excel(train_file)
-    valid_data_B = pd.read_excel(valid_file)
-    test_data_B = pd.read_excel(test_file)
+    if task == 'task1':
+      print("Fetching Binary Dataset... ")
+      print("Maximum Text Length: ", max_len)
+      print("Batch Size: ", batch_size)
+      train_file = os.path.join(files_path, "train_task1.xlsx")
+      valid_file = os.path.join(files_path, "valid_task1.xlsx")
+      test_file = os.path.join(files_path, "test_task1.xlsx")
+    
+      # binary dataset
+      train_data = pd.read_excel(train_file)
+      valid_data = pd.read_excel(valid_file)
+      test_data = pd.read_excel(test_file)
 
-    # encode labels
+      # encode labels
 
-    train_data_B['Labels'] = train_data_B['Labels'].replace({"non-hate":0,"hate":1})
-    valid_data_B['Labels'] = valid_data_B['Labels'].replace({"non-hate":0,"hate":1})
-    test_data_B['Labels'] = test_data_B['Labels'].replace({"non-hate":0,"hate":1})
+      train_data['Labels'] = train_data['Labels'].replace({"non-hate":0,"hate":1})
+      valid_data['Labels'] = valid_data['Labels'].replace({"non-hate":0,"hate":1})
+      test_data['Labels'] = test_data['Labels'].replace({"non-hate":0,"hate":1})
 
-    # print("Training Data:", len(train_data_B))
-    # print("Valid Data:", len(valid_data_B))
-    # print("Test Data", len(test_data_B))
+      weights = balanced_weigths(train_data)
+
+    else:
+      print("Fetching Multiclass Dataset... ")
+      print("Maximum Text Length: ", max_len)
+      print("Batch Size: ", batch_size)
+      train_file = os.path.join(files_path, "train_task2.xlsx")
+      valid_file = os.path.join(files_path, "valid_task2.xlsx")
+      test_file = os.path.join(files_path, "test_task2.xlsx")
+    
+      # binary dataset
+      train_data = pd.read_excel(train_file)
+      valid_data = pd.read_excel(valid_file)
+      test_data = pd.read_excel(test_file)
+
+      # encode labels
+
+      train_data['Labels'] = train_data['Labels'].replace({"TI":0,"TC":1,"TO":2,"TS":3})
+      valid_data['Labels'] = valid_data['Labels'].replace({"TI":0,"TC":1,"TO":2,"TS":3})
+      test_data['Labels'] = test_data['Labels'].replace({"TI":0,"TC":1,"TO":2,"TS":3})
+      weights = balanced_weigths(train_data)
+      
+
+    
+    # print("Training Data:", len(train_data))
+    # print("Valid Data:", len(valid_data))
+    # print("Test Data", len(test_data))
+
 
 
         # Load your dataset (Assuming you have a CSV file)
@@ -81,20 +123,23 @@ def load_dataset(files_path,memes_path):
     # Convert model weights to the same data type as the input data
     clip_model = clip_model.half()
 
-    print("Preparing Data Loaders")
+    print("Preparing Data Loaders...")
     # Create data loaders
-    train_dataset = BHMDataset(dataframe = train_data_B, tokenizer = tokenizer,data_dir = memes_path,
-                                max_seq_length=50,transform=data_transform )
-    train_loader = DataLoader(train_dataset, batch_size=4, shuffle=True)
+    train_dataset = BHMDataset(dataframe = train_data, tokenizer = tokenizer,data_dir = memes_path,
+                                max_seq_length=max_len,transform=data_transform )
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 
-    val_dataset = BHMDataset(dataframe = valid_data_B, tokenizer = tokenizer,data_dir = memes_path,
-                                max_seq_length=50,transform=data_transform )
-    val_loader = DataLoader(val_dataset, batch_size=4,shuffle=False)
+    val_dataset = BHMDataset(dataframe = valid_data, tokenizer = tokenizer,data_dir = memes_path,
+                                max_seq_length=max_len,transform=data_transform )
+    val_loader = DataLoader(val_dataset, batch_size=batch_size,shuffle=False)
 
-    test_dataset = BHMDataset(dataframe = test_data_B, tokenizer = tokenizer,data_dir = memes_path,max_seq_length=50,transform=data_transform )
-    test_loader = DataLoader(test_dataset, batch_size=4,shuffle=False)
+    test_dataset = BHMDataset(dataframe = test_data, tokenizer = tokenizer,data_dir = memes_path,max_seq_length=max_len,transform=data_transform )
+    test_loader = DataLoader(test_dataset, batch_size=batch_size,shuffle=False)
 
     print("Done.")
+    end_time = time.time()
+
+    print(f"Time required for preparing the Data loaders: {end_time-start_time:.2f}s")
 
     # check a loader
 
@@ -107,6 +152,6 @@ def load_dataset(files_path,memes_path):
     #   print("Images: ",images.shape,"\n","Input_IDs: ",input_ids.shape,"\n","Attention Mask: ",attention_mask.shape,"\n","Labels: ",labels.shape)
     # # Now you can inspect the shapes for this single example
     #   break  # Exit the loop after the first batch (1 example)
-    return train_loader,val_loader,test_loader
+    return train_loader,val_loader,test_loader, weights
 
 

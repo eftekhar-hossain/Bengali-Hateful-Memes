@@ -10,6 +10,7 @@ from tqdm import tqdm
 from madgrad import MADGRAD
 from sklearn.metrics import accuracy_score,precision_score,recall_score,f1_score,roc_auc_score
 import clip
+import os
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 # print("Device:",device)
@@ -115,37 +116,41 @@ class DORA(nn.Module):
         output = self.fc(fusion_input.mean(1))  # Pool over the sequence dimension
         return output
 
-# Create an instance of the model
-num_classes = 1  # Number of output classes (binary classification)
-num_heads = 2  # Number of attention heads for multihead attention
-model = DORA(clip_model, num_classes, num_heads)
-# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model = model.to(device)   
 
-
-# Define learning rate scheduler
-# num_epochs = 1
-# num_training_steps = num_epochs * len(train_loader)
-# lr_scheduler = get_linear_schedule_with_warmup(
-#     optimizer,
-#     num_warmup_steps=0,
-#     num_training_steps=num_training_steps
-# )
-
-
-# Define a function to calculate accuracy
-def calculate_accuracy(predictions, targets):
+# Define a function to calculate accuracy for task 1
+def calculate_accuracy_task1(predictions, targets):
     predictions = (predictions > 0.5).float()
     correct = (predictions == targets).float()
     accuracy = correct.sum() / len(correct)
     return accuracy
 
+
+# Define a function to calculate accuracy for multiclass
+def calculate_accuracy_task2(predictions, targets):
+    # For multi-class classification, you can use torch.argmax to get the predicted class
+    predictions = torch.argmax(predictions, dim=1)
+    correct = (predictions == targets).float()
+    accuracy = correct.sum() / len(correct)
+    return accuracy
+
+
 # num_epochs = 1
 
-def train(train_loader, val_loader, epochs, lr_rate):
+def train(train_loader, val_loader, task, path, heads, class_weights, epochs, lr_rate):
+
+  if task == 'task2':
+    num_classes = 4  # Number of output classes (target classification)
+    criterion = nn.CrossEntropyLoss(weight=class_weights)
+  else:
+    num_classes = 1  
+    criterion = nn.BCELoss()
+
+  num_heads = heads  # Number of attention heads for multihead attention
+  model = DORA(clip_model, num_classes, num_heads)
+  model = model.to(device)   
 
   # Define loss and optimizer
-  criterion = nn.BCELoss()
+  
   # optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
   optimizer = MADGRAD(model.parameters(), lr=lr_rate)
 
@@ -155,9 +160,15 @@ def train(train_loader, val_loader, epochs, lr_rate):
     optimizer,
     num_warmup_steps=0,
     num_training_steps=num_training_steps
-    )
+  )
     # Training loop
   best_val_accuracy = 0.0
+
+  print(f"Start Training DORA for {task}")
+  print("--------------------------------")
+  print("Number of Heads:",heads)
+  print("Epochs:",epochs)
+  print("Learning Rate:",lr_rate )
   for epoch in range(num_epochs):
       model.train()
       total_loss = 0
@@ -169,16 +180,25 @@ def train(train_loader, val_loader, epochs, lr_rate):
               images = batch['image'].to(device)
               input_ids = batch['input_ids'].to(device)
               attention_mask = batch['attention_mask'].to(device)
-              labels = batch['label'].float().to(device)
+              if task == 'task2':
+                labels = batch['label'].to(device)
+              else:
+                labels = batch['label'].float().to(device)
+
 
               optimizer.zero_grad()
               outputs = model(images, input_ids, attention_mask)
-              outputs = outputs.squeeze(dim=1)
+              if task == 'task1':
+                outputs = outputs.squeeze(dim=1)
+
               loss = criterion(outputs, labels)
               loss.backward()
               optimizer.step()
               total_loss += loss.item()
-              total_accuracy += calculate_accuracy(outputs, labels).item()
+              if task == 'task1':
+                total_accuracy += calculate_accuracy_task1(outputs, labels).item()
+              else:
+                total_accuracy += calculate_accuracy_task2(outputs, labels).item()
 
               # Update the tqdm progress bar
               t.set_postfix(loss=total_loss / (t.n + 1), acc=total_accuracy / (t.n + 1))
@@ -197,18 +217,28 @@ def train(train_loader, val_loader, epochs, lr_rate):
               images = batch['image'].to(device)
               input_ids = batch['input_ids'].to(device)
               attention_mask = batch['attention_mask'].to(device)
-              labels = batch['label'].float().to(device)
+              if task == 'task2':
+                labels = batch['label'].to(device)
+              else:
+                labels = batch['label'].float().to(device)
 
               # outputs = model(images, input_ids, attention_mask).squeeze().cpu().numpy()
               outputs = model(images, input_ids, attention_mask)
-              outputs = outputs.squeeze(dim=1)
+              if task == 'task1':
+                outputs = outputs.squeeze(dim=1)
+
               val_loss = criterion(outputs, labels)  # Calculate validation loss
               total_val_loss += val_loss.item()
-
-              preds = (outputs > 0.5).float()
+              if task == 'task1':
+                preds = (outputs > 0.5).float()  # binary
+              else:
+                preds = torch.argmax(outputs, dim=1).cpu().numpy() # multiclass 
 
               val_labels.extend(labels.cpu().numpy())
-              val_preds.extend(preds.cpu().numpy())
+              if task == 'task1':
+                val_preds.extend(preds.cpu().numpy())
+              else:
+                val_preds.extend(preds)  
 
       # Calculate validation accuracy and loss
       val_accuracy = accuracy_score(val_labels, val_preds)
@@ -218,26 +248,28 @@ def train(train_loader, val_loader, epochs, lr_rate):
       # Save the model with the best validation accuracy
       if val_accuracy > best_val_accuracy:
           best_val_accuracy = val_accuracy
-          torch.save(model.state_dict(), 'clip+xglm_model.pth')
+          torch.save(model.state_dict(), os.path.join(path, f'model_{task}.pth'))
           print("Model Saved.")
 
       lr_scheduler.step()  # Update learning rate
 
   print(f"Best Validation Accuracy: {best_val_accuracy * 100:.2f}%")
+  print("--------------------------------")
   return model
 
 
-def evaluation(model, test_loader):
+def evaluation(path,task, model, test_loader):
   # Load the saved model
   # model = MultimodalModel(bert_model, resnet_model).to(device)
   print("Model is Loading..")
-  model.load_state_dict(torch.load('clip+xglm_model.pth'))
+  model.load_state_dict(torch.load(os.path.join(path, f'model_{task}.pth')))
   model.eval()
-  print("Done Loading.")
+  print("Loaded.")
 
   test_labels = []
   test_preds = []
 
+  print("--------------------------------")
   print("Start Evaluating..")
   # Use tqdm for the test data
   with torch.no_grad(), tqdm(test_loader, desc="Testing", unit="batch") as t:
@@ -247,13 +279,19 @@ def evaluation(model, test_loader):
           attention_mask = batch['attention_mask'].to(device)
           labels = batch['label'].float().to(device)
 
-          outputs = model(images, input_ids, attention_mask).squeeze().cpu().numpy()
-          preds = (outputs > 0.5).astype(int)
+          
+          if task == 'task1':
+            outputs = model(images, input_ids, attention_mask).squeeze().cpu().numpy()
+            preds = (outputs > 0.5).astype(int)
+          else:  
+            outputs = model(images, input_ids, attention_mask)
+            preds = torch.argmax(outputs, dim=1).cpu().numpy()
 
           test_labels.extend(labels.cpu().numpy())
           test_preds.extend(preds)
 
-  print('Done Evaluation.')
+  print('Evaluation Done.')
+  print("--------------------------------")
   return test_labels, test_preds
 
 

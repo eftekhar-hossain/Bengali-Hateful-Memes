@@ -29,7 +29,11 @@ import training as t
 
 def print_metrices(true,pred):
     # print(confusion_matrix(true,pred))
-    print(classification_report(true,pred,target_names=['not-hate','hate'],digits = 3))
+    if args.task == 'task1':
+      print(classification_report(true,pred,target_names=['not-hate','hate'],digits = 3))
+    else:
+      print(classification_report(true,pred,target_names=['TI','TC','TO','TS'],digits = 3))
+
     # print("Accuracy : ",accuracy_score(true,pred))
     # print("Precison : ",precision_score(true,pred, average = 'weighted'))
     # print("Recall : ",recall_score(true,pred,  average = 'weighted'))
@@ -53,40 +57,57 @@ def main(args):
     saved_models_dir = os.path.join(root_dir, args.model_path)
     # Create the folder if it doesn't already exist
     os.makedirs(saved_models_dir, exist_ok=True)
-    # print(excel_path)
+    # print(saved_models_dir)
     
 
-    # Load the Processed Data Splits
-    train_loader, valid_loader, test_loader = d.load_dataset(excel_path,memes_path)
-    # train the model 
+    ## Load the Processed Data Splits
+    train_loader, valid_loader, test_loader, class_weights = d.load_dataset(excel_path,
+                                                              memes_path, 
+                                                              args.task, 
+                                                              args.maximum_length,
+                                                              args.batch)
+                                                        
+    #train the model 
+    start_time = time.time()
+    actual, pred = t.pipline(train_loader, 
+                              valid_loader, 
+                              test_loader, 
+                              args.task,
+                              saved_models_dir,
+                              args.n_heads,
+                              class_weights,
+                              args.epochs, 
+                              args.lr_rate)
 
-    actual, pred = t.pipline(train_loader, valid_loader, test_loader, args.epochs, args.lr_rate)
-
-    #  evaluation
-    print("Classification Report:")
+    # #  evaluation
+    print(f"Classification Report for {args.task}:")
     print_metrices(actual, pred)
 
     end_time = time.time()
+    print(f"Total time :{end_time-start_time:.2f}s")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Bengali Hateful Memes Classification')
 
+    parser.add_argument('--task', dest='task', type=str, default = 'task1',
+                        help='Binary (task1) or Multiclass (task2) Classification')
     parser.add_argument('--dataset', dest='dataset_path', type=str, default = 'BHM',
                         help='the directory of the dataset folder')
+    parser.add_argument('--max_len', dest='maximum_length', type=int, default = 50,
+                        help='the maximum text length')
+    parser.add_argument('--batch_size',dest="batch", type=int, default = 4,
+                        help='Batch Size - default 4')   
     parser.add_argument('--model', dest='model_path', type=str, default = 'Saved_Models',
-                        help='the directory of the dataset folder')                    
-
+                        help='the directory of the saved model folder')
+    parser.add_argument('--heads',dest="n_heads", type=int, default = 2,
+                        help='number of heads - default 2')                       
     parser.add_argument('--n_iter',dest="epochs", type=int, default = 1,
                         help='Number of Epochs - default 1')
-
     parser.add_argument('--lrate',dest="lr_rate", type=float, default = 2e-5,
                         help='Learning rate - default 2e-5')
+                     
 
-   # length of the text
-   # classification task number
-   # number of heads                     
-   # batch size 
     
     args = parser.parse_args()
     main(args)

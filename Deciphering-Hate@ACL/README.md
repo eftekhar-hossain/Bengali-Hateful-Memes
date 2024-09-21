@@ -52,7 +52,7 @@ Arguments:
 - `--task`: binary (`task1`) or multiclass (`task2`) classification - `default: 'task1'`
 - `--dataset`: the path of the dataset folder - `default: 'BHM'`
 - `--max_len`: the maximum text length - `default: 50`
-- `--batch_size`: `default: 50`
+- `--batch_size`: `default: 4`
 - `--model`: the saved models' path after training -`default: 'Saved_Models'`
 - `--heads`: number of attention heads - `default: 2`
 - `--n_iter`: number of epochs - `default: 1`
@@ -60,4 +60,4 @@ Arguments:
 
 
 
-After calling the `main.py` or `run.sh`, you will see a classification report of the model performance on the test set of the respective task.
+After calling `main.py` or `run.sh`, you will see a classification report of the model's performance on the respective task's test set.
